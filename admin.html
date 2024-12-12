@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Панель администратора</h1>
+    <form id="adminLoginForm">
+        <input type="text" id="adminUsername" placeholder="Логин" required>
+        <input type="password" id="adminPassword" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+    <h2>Заявки</h2>
+    <ul id="requestsList"></ul>
+    <script>
+        const requests = JSON.parse(localStorage.getItem('requests')) || [];
+        document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (document.getElementById('adminUsername').value === 'adminka' && document.getElementById('adminPassword').value === 'password') {
+                alert('Добро пожаловать в панель администратора!');
+                showRequests();
+            } else {
+                alert('Неверный логин или пароль!');
+            }
+        });
+
+        function showRequests() {
+            const requestsList = document.getElementById('requestsList');
+            requestsList.innerHTML = '';
+            requests.forEach(request => {
+                const li = document.createElement('li');
+                li.textContent = `Адрес: ${request.address}, Контакт: ${request.contact}, Время: ${request.dateTime}, Услуга: ${request.service}, Иная услуга: ${request.otherService}, Оплата: ${request.payment}`;
+                requestsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

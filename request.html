@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание заявки</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Создание заявки</h1>
+    <form id="requestForm">
+        <input type="text" id="address" placeholder="Адрес" required>
+        <input type="text" id="contact" placeholder="Контактные данные (+7(XXX)-XXX-XX-XX)" required>
+        <input type="datetime-local" id="dateTime" required>
+        <select id="service" required>
+            <option value="">Выберите услугу</option>
+            <option value="general">Общий клининг</option>
+            <option value="deep">Генеральная уборка</option>
+            <option value="post_construction">Послестроительная уборка</option>
+            <option value="dry_cleaning">Химчистка ковров и мебели</option>
+        </select>
+        <input type="checkbox" id="otherService"> Иная услуга
+        <input type="text" id="otherServiceDescription" placeholder="Опишите услугу" style="display:none;">
+        <select id="payment" required>
+            <option value="cash">Наличные</option>
+            <option value="card">Банковская карта</option>
+        </select>
+        <button type="submit">Создать заявку</button>
+    </form>
+    <script>
+        const requests = JSON.parse(localStorage.getItem('requests')) || [];
+        
+        document.getElementById('otherService').addEventListener('change', function() {
+            document.getElementById('otherServiceDescription').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('requestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const contact = document.getElementById('contact').value;
+            const contactPattern = /^\+7\(\d{3}\)-\d{3}-\d{2}-\d{2}$/;
+            if (!contactPattern.test(contact)) {
+                alert('Неверный формат телефона. Используйте +7(XXX)-XXX-XX-XX.');
+                return;
+            }
+
+            const newRequest = {
+                address: document.getElementById('address').value,
+                contact,
+                dateTime: document.getElementById('dateTime').value,
+                service: document.getElementById('service').value,
+                otherService: document.getElementById('otherService').checked ? document.getElementById('otherServiceDescription').value : '',
+                payment: document.getElementById('payment').value
+            };
+            requests.push(newRequest);
+            localStorage.setItem('requests', JSON.stringify(requests));
+            alert('Заявка создана!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

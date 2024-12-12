@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif; 
+        }
+        .logo-container h1 {
+            color: black; 
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container" style="text-align: center;">
+        <h1>МОЙ НЕ САМ</h1>
+    </div>
+    <h1>Регистрация</h1>
+    <form id="registrationForm">
+        <input type="text" id="fullName" placeholder="ФИО" required>
+        <input type="text" id="phone" placeholder="Телефон (+7(XXX)-XXX-XX-XX)" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="usernameReg" placeholder="Логин" required>
+        <input type="password" id="passwordReg" placeholder="Пароль (минимум 6 символов)" required>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <script>
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('usernameReg').value;
+            const password = document.getElementById('passwordReg').value;
+
+            const phonePattern = /^\+7\(\d{3}\)-\d{3}-\d{2}-\d{2}$/;
+            const usernameExists = users.some(user => user.username === username);
+            if (usernameExists) {
+                alert('Этот логин уже занят. Пожалуйста, выберите другой.');
+                return;
+            }
+            if (password.length < 6) {
+                alert('Пароль должен содержать минимум 6 символов.');
+                return;
+            }
+            if (!phonePattern.test(phone)) {
+                alert('Неверный формат телефона. Используйте +7(XXX)-XXX-XX-XX.');
+                return;
+            }
+            if (!/^[а-яА-ЯёЁ\s]+$/.test(fullName)) {
+                alert('ФИО должно содержать только кириллицу и пробелы.');
+                return;
+            }
+
+            const newUser  = {
+                fullName,
+                phone,
+                email,
+                username,
+                password
+            };
+            users.push(newUser );
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Пользователь зарегистрирован!');
+            this.reset();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
